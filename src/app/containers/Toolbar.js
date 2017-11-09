@@ -10,11 +10,19 @@ class ToolbarContainer extends Component {
     isBuilding: PropTypes.bool
   }
 
+  openEmulator() {
+    emulatorWindow = window.open('about:blank', 'android 6.0 emulator')
+    if (window.focus) {
+      emulatorWindow.focus()
+    }
+  }
+
   render() {
     return (
       <Toolbar
         onBuildProject={this.props.buildProject}
         isBuilding={this.props.isBuilding}
+        onOpenEmulator={this.openEmulator}
       />
     )
   }

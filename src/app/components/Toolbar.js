@@ -4,7 +4,9 @@ import { Menu, Button } from 'antd'
 
 export default class Toolbar extends Component {
   static propTypes = {
-    isBuilding: PropTypes.bool
+    isBuilding: PropTypes.bool,
+    onBuildProject: PropTypes.func,
+    onOpenEmulator: PropTypes.func
   }
 
   buildProject = () => {
@@ -18,7 +20,7 @@ export default class Toolbar extends Component {
         <Menu.Item key="1"><Button size={'large'}>Save</Button></Menu.Item>
         <Menu.Item key="2"><Button size={'large'} loading={this.props.isBuilding} onClick={this.buildProject}>Build</Button></Menu.Item>
         <Menu.Item key="3"><Button size={'large'}>Run</Button></Menu.Item>
-        <Menu.Item key="4"><Button size={'large'}>Emulator</Button></Menu.Item>
+        <Menu.Item key="4"><Button size={'large'} onClick={this.props.onOpenEmulator}>Emulator</Button></Menu.Item>
       </Menu>
     )
   }
