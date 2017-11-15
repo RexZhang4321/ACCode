@@ -7,11 +7,20 @@ export default class CreateProjectBtn extends Component {
 
   static propTypes = {
     visible: PropTypes.bool,
+    form: PropTypes.object,
     openWizard: PropTypes.func,
     onCancel: PropTypes.func,
     onOk: PropTypes.func
   }
 
+  constructor(props) {
+    super(props)
+    this.handleSubmit = this.handleSubmit.bind(this)
+  }
+
+  handleSubmit() {
+    this.props.onOk(this.props.form)
+  }
   render() {
     const { getFieldDecorator } = this.props.form;
     return (
@@ -24,7 +33,7 @@ export default class CreateProjectBtn extends Component {
             overflow: 'auto',
           }}
           onCancel={this.props.onCancel}
-          onOk={this.props.onOk}
+          onOk={this.handleSubmit}
           title="Create a new project"
           okText="Create"
           cancelText="Cancel"
