@@ -15,13 +15,25 @@ class CreateProjectBtnContainer extends Component {
     });
   }
 
+  checkPackageName = (rule, value, callback) => {
+    const form = this.props.form;
+    let regex = '^[a-z][a-z0-9_]*(\.[a-z0-9_]+)+[0-9a-z_]$'
+    if (!value.match(regex)) {
+      callback('The package name is invalid!');
+    } else {
+      callback();
+    }
+  }
+
   render() {
     return (
       <CreateProjectBtn
         openWizard={this.props.openWizard}
         visible={this.props.visible}
         onCancel={this.props.onCancel}
-        onOk={this.props.onOk}
+        onOk={this.handleSubmit}
+        form={this.props.form}
+        checkPackageName={this.checkPackageName}
       />
     )
   }

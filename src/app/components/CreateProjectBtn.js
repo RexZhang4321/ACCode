@@ -13,13 +13,14 @@ export default class CreateProjectBtn extends Component {
   }
 
   render() {
+    const { getFieldDecorator } = this.props.form;
     return (
       <div>
         <Button size={'large'} onClick={this.props.openWizard}>Create</Button>
         <Modal
           visible={this.props.visible}
           bodyStyle={{
-            height: 130,
+            height: 180,
             overflow: 'auto',
           }}
           onCancel={this.props.onCancel}
@@ -30,16 +31,28 @@ export default class CreateProjectBtn extends Component {
         >
           <div ref="dialogContent">
             <Form>
+              <FormItem label="Package Name" labelCol={{ span: 6 }} wrapperCol={{ span: 12 }}>
+                {getFieldDecorator('Package Name', {
+                  rules: [{ required: true, message: 'Please input your package name' },
+                          { validator: this.props.checkPackageName,}],
+                })(
+                  <Input />
+                )}
+              </FormItem>
               <FormItem label="Project Name" labelCol={{ span: 6 }} wrapperCol={{ span: 12 }}>
-                <Input
-
-                />
+                {getFieldDecorator('Project Name', {
+                  rules: [{ required: true, message: 'Please input your project name' }],
+                })(
+                  <Input />
+                )}
               </FormItem>
 
               <FormItem label="Description" labelCol={{ span: 6 }} wrapperCol={{ span: 12 }}>
-                <Input
-
-                />
+                {getFieldDecorator('Description', {
+                  rules: [{ required: false, message: 'Please input the description of your project' }],
+                })(
+                  <Input />
+                )}
               </FormItem>
             </Form>
           </div>
