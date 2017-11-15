@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import { Tabs, Icon, Input } from 'antd'
 
@@ -6,6 +7,19 @@ const { TextArea } = Input;
 const TabPane = Tabs.TabPane;
 
 export default class OutputWindow extends Component {
+  static propTypes = {
+    buildLog: PropTypes.array,
+    lastBuildLogTimestamp: PropTypes.number
+  }
+
+  componentWillUpdate() {
+    const buildLogEle = ReactDOM.findDOMNode(this.buildLogEle)
+    buildLogEle.scrollTop = buildLogEle.scrollHeight
+  }
+
+  stringifyLog(logArr) {
+    return logArr.map(event => event.message).join('')
+  }
   
   render() {
     return (
@@ -13,14 +27,15 @@ export default class OutputWindow extends Component {
         <Tabs type="card">
           <TabPane tab="Build Log" key="1">
             <TextArea
-              rows={4}
+              rows={10}
               readOnly
               style={{marginTop: -16}}
-              defaultValue='Build log will be displayed here&#10;,&#10;,&#13;,&#10;,&#10;...'/>
+              value={this.stringifyLog(this.props.buildLog)}
+              ref={(el) => this.buildLogEle = el}/>
           </TabPane>
           <TabPane tab="Running Log" key="2">
             <TextArea
-              rows={4}
+              rows={10}
               readOnly
               style={{marginTop: -16}}
               defaultValue='Application running log will be displayed here'/>

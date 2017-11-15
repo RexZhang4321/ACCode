@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import CodeEditor from './CodeEditor'
 import Explorer from './Explorer'
-import OutputWindow from '../components/OutputWindow'
+import OutputWindow from './OutputWindow'
 import Toolbar from './Toolbar'
 import { Row, Col } from 'antd';
 

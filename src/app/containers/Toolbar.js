@@ -3,12 +3,21 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Toolbar from '../components/Toolbar'
 import { fireBuildProject, finishBuildProject } from '../reducers/toolbar'
+import { fetchBuildLog } from '../reducers/outputWindow'
 
 class ToolbarContainer extends Component {
   static propTypes = {
     buildProject: PropTypes.func,
     finishBuildProject: PropTypes.func,
+    fetchBuildLog: PropTypes.func,
     isBuilding: PropTypes.bool
+  }
+
+  fetchBuildLogTimer = null
+
+  constructor(props) {
+    super(props)
+    this.buildProject = this.buildProject.bind(this)
   }
 
   componentWillMount() {
@@ -23,6 +32,7 @@ class ToolbarContainer extends Component {
       switch (response.action) {
         case 'build-finished':
           this.props.finishBuildProject()
+          clearTimeout(this.fetchBuildLogTimer)
         default:
           console.log('no matching event!')
       }
@@ -36,10 +46,22 @@ class ToolbarContainer extends Component {
     }
   }
 
+  buildProject() {
+    this.props.buildProject('android-build-sdk-base')
+    clearTimeout(this.fetchBuildLogTimer)
+    const buildId = 'android-build-sdk-base:22f82d4c-82e8-4dee-a975-717661a323c4'
+    this.fetchBuildLogTimer = setTimeout(() => {
+      this.props.fetchBuildLog(buildId, this.props.lastBuildLogTimestamp + 1)
+      setTimeout(() => {
+        this.props.fetchBuildLog(buildId, this.props.lastBuildLogTimestamp + 1)
+      }, 5000);
+    }, 5000)
+  }
+
   render() {
     return (
       <Toolbar
-        onBuildProject={this.props.buildProject}
+        onBuildProject={this.buildProject}
         isBuilding={this.props.isBuilding}
         onOpenEmulator={this.openEmulator}
       />
@@ -49,10 +71,11 @@ class ToolbarContainer extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { toolbarReducer } = state
+  const { toolbarReducer, outputWindowReducer } = state
   const { isBuilding } = toolbarReducer || { isBuilding: false }
+  const { lastBuildLogTimestamp } = outputWindowReducer || { lastBuildLogTimestamp: 0 }
 
-  return { isBuilding }
+  return { isBuilding, lastBuildLogTimestamp }
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -62,6 +85,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     finishBuildProject: () => {
       dispatch(finishBuildProject())
+    },
+    fetchBuildLog: (buildId, startTime) => {
+      dispatch(fetchBuildLog(buildId, startTime))
     }
   }
 }
