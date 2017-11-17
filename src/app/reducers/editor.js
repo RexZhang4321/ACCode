@@ -1,4 +1,5 @@
 import fetch from 'isomorphic-fetch'
+import { explorerGetFileURL } from '../utils/routing'
 
 // Action types
 const LOAD_EDITOR_CONTENT = 'LOAD_EDITOR_CONTENT'
@@ -53,7 +54,7 @@ export const receiveFileContent = (content) => {
 export const fetchFileContent = (path) => {
   return dispatch => {
     dispatch(requestFileContent())
-    return fetch('http://localhost:5000/explorer/project?path=' + path)
+    return fetch(explorerGetFileURL('test-android-hello', path))
       .then(response => response.text())
       .then(text => dispatch(receiveFileContent(text)))
   }

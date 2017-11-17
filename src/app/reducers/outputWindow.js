@@ -1,4 +1,5 @@
 import fetch from 'isomorphic-fetch'
+import { getBuildLogURL } from '../utils/routing'
 
 // action types
 const RECEIVE_BUILD_LOG = 'RECEIVE_BUILD_LOG'
@@ -32,7 +33,7 @@ export const receiveBuildLog = (buildLog) => {
 
 export const fetchBuildLog = (buildId, startTime) => {
   return dispatch => {
-    return fetch('http://localhost:5000/tools/buildlog?buildId=' + buildId + '&startTime=' + startTime.toString())
+    return fetch(getBuildLogURL(buildId, startTime.toString()))
       .then(response => response.json())
       .then(json => dispatch(receiveBuildLog(json)))
   }

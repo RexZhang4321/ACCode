@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import Toolbar from '../components/Toolbar'
 import { fireBuildProject, finishBuildProject } from '../reducers/toolbar'
 import { fetchBuildLog } from '../reducers/outputWindow'
+import { subscribeServerURL } from '../utils/routing'
 
 class ToolbarContainer extends Component {
   static propTypes = {
@@ -25,7 +26,7 @@ class ToolbarContainer extends Component {
   }
 
   _initServerSideEvent() {
-    const url = 'http://localhost:5000/subscribeServer?project=' + 'test-android-hello'
+    const url = subscribeServerURL('test-android-hello')
     const source = new EventSource(url)
     source.onmessage = (e) => {
       const response = JSON.parse(e.data)

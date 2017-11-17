@@ -1,4 +1,5 @@
 import fetch from 'isomorphic-fetch'
+import { explorerGetDirURL } from '../utils/routing'
 
 // Action types
 const REQUEST_PROJECT = 'REQUEST_PROJECT'
@@ -42,7 +43,7 @@ export const receiveProject = (projectDir) => {
 export const fetchProject = () => {
   return dispatch => {
     dispatch(requestProject())
-    return fetch('http://localhost:5000/explorer/getdir')
+    return fetch(explorerGetDirURL('test-android-hello'))
       .then(response => response.json())
       .then(json => dispatch(receiveProject(json)))
   }

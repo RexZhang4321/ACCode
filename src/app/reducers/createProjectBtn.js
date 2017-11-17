@@ -1,4 +1,5 @@
 import fetch from 'isomorphic-fetch'
+import { createProjectURL } from '../utils/routing'
 
 // Action types
 const OPEN_WIZARD = 'OPEN_WIZARD'
@@ -46,6 +47,6 @@ export const createNewProject = () => {
 export const sendProjectConfig = (project) => {
   return dispatch => {
     dispatch(createNewProject())
-    return fetch('http://localhost:8888/?name=' + project['Project Name'] + '&package=' + project['Package Name'] + '&description=' + project['Description'])
+    return fetch(createProjectURL(project['Project Name'], project['Package Name'], project['Description']))
   }
 }

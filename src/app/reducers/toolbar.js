@@ -1,4 +1,5 @@
 import fetch from 'isomorphic-fetch'
+import { buildProjectURL } from '../utils/routing'
 
 // Action types
 const REQUEST_BUILD_PROJECT = 'REQUEST_BUILD_PROJECT'
@@ -36,6 +37,6 @@ export const finishBuildProject = () => {
 export const fireBuildProject = (projectName) => {
   return dispatch => {
     dispatch(requestBuildProject())
-    return fetch('http://localhost:5000/tools/build?project=' + projectName)
+    return fetch(buildProjectURL(projectName))
   }
 }
