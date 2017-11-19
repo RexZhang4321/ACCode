@@ -8,6 +8,7 @@ const MenuItemGroup = Menu.ItemGroup;
 
 export default class Explorer extends Component {
   static propTypes = {
+    appName: PropTypes.string,
     projectDir: PropTypes.object,
     isFetching: PropTypes.bool,
     onLoadEditorContent: PropTypes.func
@@ -19,7 +20,7 @@ export default class Explorer extends Component {
   }
 
   loadEditorContent(item, key, keyPath) {
-    this.props.onLoadEditorContent(item.key)
+    this.props.onLoadEditorContent(this.props.appName, item.key)
   }
 
   renderDirData(data, curDir) {

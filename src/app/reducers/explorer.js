@@ -40,10 +40,10 @@ export const receiveProject = (projectDir) => {
   }
 }
 
-export const fetchProject = () => {
+export const fetchProject = (appName) => {
   return dispatch => {
     dispatch(requestProject())
-    return fetch(explorerGetDirURL('test-android-hello'))
+    return fetch(explorerGetDirURL(appName))
       .then(response => response.json())
       .then(json => dispatch(receiveProject(json)))
   }

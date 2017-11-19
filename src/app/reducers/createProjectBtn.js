@@ -1,5 +1,6 @@
 import fetch from 'isomorphic-fetch'
 import { createProjectURL } from '../utils/routing'
+import { setProjectName } from './projectConfig'
 
 // Action types
 const OPEN_WIZARD = 'OPEN_WIZARD'
@@ -58,6 +59,8 @@ export const finishCreating = () => {
 export const sendProjectConfig = (project) => {
   return dispatch => {
     dispatch(createNewProject())
-    return fetch(createProjectURL(project['Project Name'], project['Package Name'], project['Description']), { method: 'post', body: JSON.stringify(project)}).then(dispatch(finishCreating()))
+    return fetch(createProjectURL(project['Project Name'], project['Package Name'], project['Description']), { method: 'post', body: JSON.stringify(project)})
+      .then(response => dispatch(finishCreating()))
+      .then(() => dispatch(setProjectName(project['Project Name'])))
   }
 }

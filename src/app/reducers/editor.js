@@ -51,10 +51,10 @@ export const receiveFileContent = (content) => {
   }
 }
 
-export const fetchFileContent = (path) => {
+export const fetchFileContent = (appName, path) => {
   return dispatch => {
     dispatch(requestFileContent())
-    return fetch(explorerGetFileURL('test-android-hello', path))
+    return fetch(explorerGetFileURL(appName, path))
       .then(response => response.text())
       .then(text => dispatch(receiveFileContent(text)))
   }

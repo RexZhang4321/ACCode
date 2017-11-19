@@ -1,5 +1,6 @@
 import fetch from 'isomorphic-fetch'
 import { buildProjectURL } from '../utils/routing'
+import { setBuildId } from './projectConfig'
 
 // Action types
 const REQUEST_BUILD_PROJECT = 'REQUEST_BUILD_PROJECT'
@@ -38,5 +39,7 @@ export const fireBuildProject = (projectName) => {
   return dispatch => {
     dispatch(requestBuildProject())
     return fetch(buildProjectURL(projectName))
+      .then(response => (response.text()))
+      .then(buildId => dispatch(setBuildId(buildId)))
   }
 }

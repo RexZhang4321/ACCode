@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import Toolbar from '../components/Toolbar'
 import { fireBuildProject, finishBuildProject } from '../reducers/toolbar'
 import { fetchBuildLog } from '../reducers/outputWindow'
+import { DEFAULT_PROJECT_NAME, DEFAULT_BUILD_ID } from '../reducers/projectConfig'
 import { subscribeServerURL } from '../utils/routing'
 
 class ToolbarContainer extends Component {
@@ -15,20 +16,44 @@ class ToolbarContainer extends Component {
   }
 
   fetchBuildLogTimer = null
+  eventSource = null
 
   constructor(props) {
     super(props)
     this.buildProject = this.buildProject.bind(this)
+    this._initServerSideEvent = this._initServerSideEvent.bind(this)
   }
 
   componentWillMount() {
-    this._initServerSideEvent()
+    this._initServerSideEvent(this.props.appName)
   }
 
-  _initServerSideEvent() {
-    const url = subscribeServerURL('test-android-hello')
-    const source = new EventSource(url)
-    source.onmessage = (e) => {
+  componentWillReceiveProps(nextProps) {
+    // buildId has been updated
+    if (nextProps.buildId !== this.props.buildId) {
+      // read the log
+      clearTimeout(this.fetchBuildLogTimer)
+      const buildId = nextProps.buildId
+      this.fetchBuildLogTimer = setTimeout(() => {
+        this.props.fetchBuildLog(buildId, this.props.lastBuildLogTimestamp + 1)
+        setTimeout(() => {
+          this.props.fetchBuildLog(buildId, this.props.lastBuildLogTimestamp + 1)
+        }, 5000);
+      }, 5000)
+    }
+
+    // appName has been updated
+    if (nextProps.appName !== this.props.appName) {
+      this.eventSource.close()
+      this._initServerSideEvent(nextProps.appName)
+    }
+  }
+
+  _initServerSideEvent(appName) {
+    const url = subscribeServerURL(appName)
+    console.log('current project: ' + appName)
+    this.eventSource = new EventSource(url)
+    this.eventSource.onmessage = (e) => {
       const response = JSON.parse(e.data)
       switch (response.action) {
         case 'build-finished':
@@ -48,15 +73,7 @@ class ToolbarContainer extends Component {
   }
 
   buildProject() {
-    this.props.buildProject('android-build-sdk-base')
-    clearTimeout(this.fetchBuildLogTimer)
-    const buildId = 'android-build-sdk-base:22f82d4c-82e8-4dee-a975-717661a323c4'
-    this.fetchBuildLogTimer = setTimeout(() => {
-      this.props.fetchBuildLog(buildId, this.props.lastBuildLogTimestamp + 1)
-      setTimeout(() => {
-        this.props.fetchBuildLog(buildId, this.props.lastBuildLogTimestamp + 1)
-      }, 5000);
-    }, 5000)
+    this.props.buildProject(this.props.appName)
   }
 
   render() {
@@ -72,11 +89,15 @@ class ToolbarContainer extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { toolbarReducer, outputWindowReducer } = state
+  const { toolbarReducer, outputWindowReducer, projectConfigReducer } = state
   const { isBuilding } = toolbarReducer || { isBuilding: false }
   const { lastBuildLogTimestamp } = outputWindowReducer || { lastBuildLogTimestamp: 0 }
+  const { appName, buildId } = projectConfigReducer || {
+    appName: DEFAULT_PROJECT_NAME,
+    buildId: DEFAULT_BUILD_ID
+  }
 
-  return { isBuilding, lastBuildLogTimestamp }
+  return { isBuilding, lastBuildLogTimestamp, appName, buildId }
 }
 
 const mapDispatchToProps = (dispatch) => {

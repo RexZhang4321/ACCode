@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import Explorer from '../components/Explorer'
 import { fetchProject } from '../reducers/explorer'
 import { fetchFileContent } from '../reducers/editor'
+import { DEFAULT_PROJECT_NAME } from '../reducers/projectConfig'
 
 class ExplorerContainer extends Component {
   static propTypes = {
@@ -13,17 +14,31 @@ class ExplorerContainer extends Component {
     fetchFileContent: PropTypes.func
   }
 
-  componentWillMount() {
-    this._loadProject()
+  constructor(props) {
+    super(props)
+    this._loadProject = this._loadProject.bind(this)
   }
 
-  _loadProject() {
-    this.props.fetchProject()
+  componentWillMount() {
+    console.log(this.props.appName)
+    this._loadProject(this.props.appName)
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.appName !== this.props.appName) {
+      console.log(nextProps.appName)
+      this._loadProject(nextProps.appName)
+    }
+  }
+
+  _loadProject(appName) {
+    this.props.fetchProject(appName)
   }
 
   render() {
     return (
       <Explorer
+        appName={this.props.appName}
         projectDir={this.props.projectDir}
         isFetching={this.props.isFetching}
         onLoadEditorContent={this.props.fetchFileContent}
@@ -34,7 +49,7 @@ class ExplorerContainer extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { explorerReducer } = state
+  const { explorerReducer, projectConfigReducer } = state
   const {
     projectDir,
     isFetching
@@ -42,20 +57,22 @@ const mapStateToProps = (state) => {
     projectDir: {},
     isFetching: false
   }
+  const { appName } = projectConfigReducer || { appName: DEFAULT_PROJECT_NAME }
 
   return {
     projectDir,
-    isFetching
+    isFetching,
+    appName
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    fetchProject: () => {
-      dispatch(fetchProject())
+    fetchProject: (appName) => {
+      dispatch(fetchProject(appName))
     },
-    fetchFileContent: (path) => {
-      dispatch(fetchFileContent(path))
+    fetchFileContent: (appName, path) => {
+      dispatch(fetchFileContent(appName, path))
     }
   }
 }
