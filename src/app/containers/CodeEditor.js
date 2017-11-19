@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import CodeEditor from '../components/CodeEditor'
+import { updateFileContent } from '../reducers/editor';
 
 class CodeEditorContainer extends Component {
   static propTypes = {
@@ -12,6 +13,7 @@ class CodeEditorContainer extends Component {
     return (
       <CodeEditor
         content={this.props.content}
+        onChange={this.props.onChange}
       />
     )
   }
@@ -27,6 +29,15 @@ const mapStateToProps = (state) => {
   }
 }
 
+const mapDispatchToProps = (dispatch) => {
+  return {
+    onChange: (newValue, e) => {
+      dispatch(updateFileContent(newValue, e))
+    }
+  }
+}
+
 export default connect(
-  mapStateToProps
+  mapStateToProps,
+  mapDispatchToProps
 )(CodeEditorContainer)

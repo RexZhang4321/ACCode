@@ -22,6 +22,7 @@ export default class Editor extends Component {
           language="java"
           theme="vs"
           value={this.props.content}
+          onChange={this.props.onChange}
         />
       </div>
     )

@@ -5,6 +5,7 @@ import { explorerGetFileURL } from '../utils/routing'
 const LOAD_EDITOR_CONTENT = 'LOAD_EDITOR_CONTENT'
 const REQUEST_FILE_CONTENT = 'REQUEST_FILE_CONTENT'
 const RECEIVE_FILE_CONTENT = 'RECEIVE_FILE_CONTENT'
+const UPDATE_CONTENT = 'UPDATE_CONTENT'
 
 const DEFAULT_CONTENT = "// type your code here..."
 const LOADING_CONTENT = "// loading..."
@@ -30,6 +31,10 @@ export default function(state, action) {
         isFetching: false,
         content: action.content
       })
+    case UPDATE_CONTENT:
+      return Object.assign({}, state, {
+        content: action.content
+      })
     default:
       return state
   }
@@ -47,6 +52,13 @@ export const requestFileContent = () => {
 export const receiveFileContent = (content) => {
   return {
     type: RECEIVE_FILE_CONTENT,
+    content: content
+  }
+}
+
+export const updateFileContent = (content, event) => {
+  return {
+    type: UPDATE_CONTENT,
     content: content
   }
 }
