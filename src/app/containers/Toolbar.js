@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Toolbar from '../components/Toolbar'
-import { fireBuildProject, finishBuildProject } from '../reducers/toolbar'
+import { fireBuildProject, finishBuildProject, fireSaveProject } from '../reducers/toolbar'
 import { fetchBuildLog } from '../reducers/outputWindow'
 import { DEFAULT_PROJECT_NAME, DEFAULT_BUILD_ID } from '../reducers/projectConfig'
 import { subscribeServerURL } from '../utils/routing'
@@ -12,7 +12,9 @@ class ToolbarContainer extends Component {
     buildProject: PropTypes.func,
     finishBuildProject: PropTypes.func,
     fetchBuildLog: PropTypes.func,
-    isBuilding: PropTypes.bool
+    isBuilding: PropTypes.bool,
+    isSaving: PropTypes.bool,
+    saveProject: PropTypes.func,
   }
 
   fetchBuildLogTimer = null
@@ -22,6 +24,7 @@ class ToolbarContainer extends Component {
     super(props)
     this.buildProject = this.buildProject.bind(this)
     this._initServerSideEvent = this._initServerSideEvent.bind(this)
+    this.saveProject = this.saveProject.bind(this)
   }
 
   componentWillMount() {
@@ -76,11 +79,17 @@ class ToolbarContainer extends Component {
     this.props.buildProject(this.props.appName)
   }
 
+  saveProject() {
+    this.props.saveProject('android-build-sdk-base', 'path')
+  }
+
   render() {
     return (
       <Toolbar
         onBuildProject={this.buildProject}
         isBuilding={this.props.isBuilding}
+        isSaving={this.props.isSaving}
+        onSaveProject={this.saveProject}
         onOpenEmulator={this.openEmulator}
       />
     )
@@ -91,19 +100,26 @@ class ToolbarContainer extends Component {
 const mapStateToProps = (state) => {
   const { toolbarReducer, outputWindowReducer, projectConfigReducer } = state
   const { isBuilding } = toolbarReducer || { isBuilding: false }
+  const { isSaving } = toolbarReducer || { isSaving: false }
   const { lastBuildLogTimestamp } = outputWindowReducer || { lastBuildLogTimestamp: 0 }
   const { appName, buildId } = projectConfigReducer || {
     appName: DEFAULT_PROJECT_NAME,
     buildId: DEFAULT_BUILD_ID
   }
 
-  return { isBuilding, lastBuildLogTimestamp, appName, buildId }
+  return { isBuilding, lastBuildLogTimestamp, appName, buildId, isSaving }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     buildProject: (projectName) => {
       dispatch(fireBuildProject(projectName))
+    },
+    saveProject: (projectName, path) => {
+      dispatch(fireSaveProject(projectName, path))
+    },
+    finishSaveProject: () => {
+      dispatch(finishSaveProject())
     },
     finishBuildProject: () => {
       dispatch(finishBuildProject())

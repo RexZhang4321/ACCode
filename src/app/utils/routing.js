@@ -26,6 +26,10 @@ export const buildProjectURL = (projectName) => {
   return buildURL('/tools/build', {project: projectName})
 }
 
+export const saveProjectURL = (projectName, filePath) => {
+  return buildURL('/tools/save', {project: projectName, path: filePath})
+}
+
 export const subscribeServerURL = (projectName) => {
   return buildURL('/subscribeServer', {project: projectName})
 }
