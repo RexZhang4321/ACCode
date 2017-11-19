@@ -7,6 +7,7 @@ export default class CreateProjectBtn extends Component {
 
   static propTypes = {
     visible: PropTypes.bool,
+    isCreating: PropTypes.bool,
     form: PropTypes.object,
     openWizard: PropTypes.func,
     onCancel: PropTypes.func,
@@ -28,6 +29,7 @@ export default class CreateProjectBtn extends Component {
         <Button size={'large'} onClick={this.props.openWizard}>Create</Button>
         <Modal
           visible={this.props.visible}
+          confirmLoading={this.props.isCreating}
           bodyStyle={{
             height: 180,
             overflow: 'auto',

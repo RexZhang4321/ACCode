@@ -6,6 +6,15 @@ import { openWizard, closeWizard, sendProjectConfig } from '../reducers/createPr
 
 class CreateProjectBtnContainer extends Component {
 
+  static propTypes = {
+    openWizard: PropTypes.func,
+    visible: PropTypes.bool,
+    isCreating: PropTypes.bool,
+    onCancel: PropTypes.func,
+    onOk: PropTypes.func,
+    form: PropTypes.object,
+  }
+
   checkPackageName = (rule, value, callback) => {
     let regex = '^[a-z][a-z0-9_]*(\.[a-z0-9_]+)+[0-9a-z_]$'
     if (!value.match(regex)) {
@@ -20,6 +29,7 @@ class CreateProjectBtnContainer extends Component {
       <CreateProjectBtn
         openWizard={this.props.openWizard}
         visible={this.props.visible}
+        isCreating={this.props.isCreating}
         onCancel={this.props.onCancel}
         onOk={this.props.onOk}
         form={this.props.form}
@@ -33,7 +43,8 @@ const mapStateToProps = (state) => {
 
   const { createProjectBtnReducer } = state
   const { visible } = createProjectBtnReducer || { visible: false }
-  return { visible }
+  const { isCreating } = createProjectBtnReducer || { isCreating: false }
+  return { visible, isCreating }
 }
 
 const mapDispatchToProps = (dispatch) => {
