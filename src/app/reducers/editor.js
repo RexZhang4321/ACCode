@@ -1,5 +1,6 @@
 import fetch from 'isomorphic-fetch'
 import { explorerGetFileURL } from '../utils/routing'
+import { setCurrentFile } from './projectConfig';
 
 // Action types
 const LOAD_EDITOR_CONTENT = 'LOAD_EDITOR_CONTENT'
@@ -66,6 +67,7 @@ export const updateFileContent = (content, event) => {
 export const fetchFileContent = (appName, path) => {
   return dispatch => {
     dispatch(requestFileContent())
+    dispatch(setCurrentFile(path))
     return fetch(explorerGetFileURL(appName, path))
       .then(response => response.text())
       .then(text => dispatch(receiveFileContent(text)))

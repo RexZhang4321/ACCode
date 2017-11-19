@@ -4,7 +4,8 @@ import PropTypes from 'prop-types'
 import Toolbar from '../components/Toolbar'
 import { fireBuildProject, finishBuildProject, fireSaveProject } from '../reducers/toolbar'
 import { fetchBuildLog } from '../reducers/outputWindow'
-import { DEFAULT_PROJECT_NAME, DEFAULT_BUILD_ID } from '../reducers/projectConfig'
+import { DEFAULT_PROJECT_NAME, DEFAULT_BUILD_ID, DEFAULT_CURRENT_FILE_PATH } from '../reducers/projectConfig'
+import { DEFAULT_CONTENT } from '../reducers/editor'
 import { subscribeServerURL } from '../utils/routing'
 
 class ToolbarContainer extends Component {
@@ -80,7 +81,7 @@ class ToolbarContainer extends Component {
   }
 
   saveProject() {
-    this.props.saveProject('android-build-sdk-base', 'path')
+    this.props.saveProject(this.props.appName, this.props.currentFilePath, this.props.content)
   }
 
   render() {
@@ -98,16 +99,17 @@ class ToolbarContainer extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { toolbarReducer, outputWindowReducer, projectConfigReducer } = state
+  const { toolbarReducer, outputWindowReducer, projectConfigReducer, editorReducer } = state
   const { isBuilding } = toolbarReducer || { isBuilding: false }
   const { isSaving } = toolbarReducer || { isSaving: false }
   const { lastBuildLogTimestamp } = outputWindowReducer || { lastBuildLogTimestamp: 0 }
-  const { appName, buildId } = projectConfigReducer || {
+  const { appName, buildId, currentFilePath } = projectConfigReducer || {
     appName: DEFAULT_PROJECT_NAME,
-    buildId: DEFAULT_BUILD_ID
+    buildId: DEFAULT_BUILD_ID,
+    currentFilePath: DEFAULT_CURRENT_FILE_PATH
   }
-
-  return { isBuilding, lastBuildLogTimestamp, appName, buildId, isSaving }
+  const { content } = editorReducer || { content: DEFAULT_CONTENT }
+  return { isBuilding, lastBuildLogTimestamp, appName, buildId, isSaving, content, currentFilePath }
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -115,8 +117,8 @@ const mapDispatchToProps = (dispatch) => {
     buildProject: (projectName) => {
       dispatch(fireBuildProject(projectName))
     },
-    saveProject: (projectName, path) => {
-      dispatch(fireSaveProject(projectName, path))
+    saveProject: (projectName, path, content) => {
+      dispatch(fireSaveProject(projectName, path, content))
     },
     finishSaveProject: () => {
       dispatch(finishSaveProject())

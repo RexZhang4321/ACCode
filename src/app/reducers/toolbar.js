@@ -54,10 +54,15 @@ export const finishSaveProject = () => {
   return { type: FINISH_SAVE_PROJECT }
 }
 
-export const fireSaveProject = (projectName, filepath) => {
+export const fireSaveProject = (projectName, filePath, content) => {
   return dispatch => {
     dispatch(requestSaveProject())
-    return fetch(saveProjectURL(projectName, filepath))
+    const data = {
+      appName: projectName,
+      path: filePath,
+      code: content,
+    }
+    return fetch(saveProjectURL(projectName, filePath), { method: 'post', body: JSON.stringify(data)})
       .then(response => dispatch(finishSaveProject()))
   }
 }
