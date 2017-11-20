@@ -2,10 +2,24 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import FileCtlBtn from '../components/FileCtlBtn'
-import { openNewFolder, openNewFile, cancelNewFolder, cancelNewFile, openDeleteFolder, cancelDeleteFolder, openDeleteFile, cancelDeleteFile } from '../reducers/fileCtlBtn'
+import { DEFAULT_PROJECT_NAME, DEFAULT_CURRENT_FILE_PATH } from '../reducers/projectConfig'
+import { openNewFolder, openNewFile, cancelNewFolder, cancelNewFile, openDeleteFolder, cancelDeleteFolder, openDeleteFile, cancelDeleteFile, createNewFolder, createNewFile } from '../reducers/fileCtlBtn'
 
 class FileCtlBtnContainer extends Component {
 
+  constructor(props) {
+    super(props)
+    this.createNewFolder = this.createNewFolder.bind(this)
+    this.createNewFile = this.createNewFile.bind(this)
+  }
+
+  createNewFolder = () => {
+    this.props.createNewFolder(this.props.form, this.props.appName, this.props.currentFilePath)
+  }
+
+  createNewFile = () => {
+    this.props.createNewFile(this.props.form, this.props.appName, this.props.currentFilePath)
+  }
   render() {
     return (
       <FileCtlBtn 
@@ -14,8 +28,8 @@ class FileCtlBtnContainer extends Component {
         newFileVisible={this.props.newFileVisible}
         onCancelNewFolder={this.props.cancelNewFolder}
         onCancelNewFile={this.props.cancelNewFile}
-        onCreateNewFolder={this.props.createNewFolder}
-        onCreateNewFile={this.props.createNewFile}
+        onCreateNewFolder={this.createNewFolder}
+        onCreateNewFile={this.createNewFile}
         onOpenNewFolder={this.props.openNewFolder}
         onOpenNewFile={this.props.openNewFile}
         deleteFolderVisible={this.props.deleteFolderVisible}
@@ -32,12 +46,18 @@ class FileCtlBtnContainer extends Component {
 }
 
 const mapStateToProps = (state) => {
-  const { fileCtlBtnReducer } = state
-  const { newFolderVisible } = fileCtlBtnReducer || { newFolderVisible: false }
-  const { newFileVisible } = fileCtlBtnReducer || { newFileVisible: false }
-  const { deleteFolderVisible } = fileCtlBtnReducer || { deleteFolderVisible: false }
-  const { deleteFileVisible } = fileCtlBtnReducer || { deleteFileVisible: false }
-  return { newFolderVisible, newFileVisible, deleteFolderVisible, deleteFileVisible }
+  const { fileCtlBtnReducer, projectConfigReducer } = state
+  const { newFolderVisible, newFileVisible, deleteFolderVisible, deleteFileVisible } = fileCtlBtnReducer || {
+    newFolderVisible: false,
+    newFileVisible: false,
+    deleteFolderVisible: false,
+    deleteFileVisible: false,
+  }
+  const { appName, currentFilePath } = projectConfigReducer || {
+    appName: DEFAULT_PROJECT_NAME,
+    currentFilePath: DEFAULT_CURRENT_FILE_PATH
+  }
+  return { newFolderVisible, newFileVisible, deleteFolderVisible, deleteFileVisible, appName, currentFilePath }
 }
   
 const mapDispatchToProps = (dispatch) => {
@@ -66,18 +86,19 @@ const mapDispatchToProps = (dispatch) => {
     cancelDeleteFile: () => {
       dispatch(cancelDeleteFile())
     },
-    createNewFolder: (form) => {
+    createNewFolder: (form, appName, currentFilePath) => {
       form.validateFields((err, values) => {
-      if (!err) {
-        dispatch(createNewFolder(values))
-      }
+        if (!err) {
+          console.log(currentFilePath)
+          dispatch(createNewFolder(values, appName, currentFilePath))
+        }
       });
     },
-    createNewFile: (form) => {
+    createNewFile: (form, appName, currentFilePath) => {
       form.validateFields((err, values) => {
-      if (!err) {
-        dispatch(createNewFile(values))
-      }
+        if (!err) {
+          dispatch(createNewFile(values, appName, currentFilePath))
+        }
       });
     }
   }

@@ -41,3 +41,12 @@ export const getBuildLogURL = (buildId, startTime) => {
 export const createProjectURL = (projectName, packageName, description='') => {
   return buildURL('/tools/createProject', {name: projectName, package: packageName, description: description})
 }
+
+export const createFolderURL = (appName, currPath) => {
+  return buildURL('/explorer/createFolder', {appName: appName, currPath: currPath})
+}
+
+export const createFileURL = (appName, currPath) => {
+  return buildURL('/explorer/createFile', {appName: appName, currPath: currPath})
+}
+

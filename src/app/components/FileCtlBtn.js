@@ -50,7 +50,7 @@ export default class FileCtlBtn extends Component {
             <Form>
               <FormItem label="Folder Name" labelCol={{ span: 6 }} wrapperCol={{ span: 12 }}>
                 {getFieldDecorator('Folder Name', {
-                  rules: [{ required: true, message: 'Please input the folder name' }],
+                  rules: [{ required: false, message: 'Please input the folder name' }],
                 })(
                   <Input />
                 )}
@@ -88,7 +88,7 @@ export default class FileCtlBtn extends Component {
             <Form>
               <FormItem label="File Name" labelCol={{ span: 6 }} wrapperCol={{ span: 12 }}>
                 {getFieldDecorator('File Name', {
-                  rules: [{ required: true, message: 'Please input the file name' }],
+                  rules: [{ required: false, message: 'Please input the file name' }],
                 })(
                   <Input />
                 )}
