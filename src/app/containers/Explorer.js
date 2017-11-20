@@ -45,7 +45,6 @@ class ExplorerContainer extends Component {
       />
     )
   }
-
 }
 
 const mapStateToProps = (state) => {

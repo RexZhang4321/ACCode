@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Menu, Icon } from 'antd'
+import { Menu, Icon, Form } from 'antd'
 import * as defs from '../utils/defs'
+import FileCtlBtn from '../containers/FileCtlBtn'
 
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
@@ -42,16 +43,20 @@ export default class Explorer extends Component {
   }
 
   renderData(dirData) {
-    if (!dirData.children) return (<Menu mode="inline"/>)
+    const WrappedFileCtlBtn = Form.create()(FileCtlBtn);
+    if (!dirData.children) return ( <div> <WrappedFileCtlBtn/> <Menu mode="inline"/> </div>)
     return (
-      <Menu
-        mode="inline"
-        onClick={this.loadEditorContent}
-      >
-        {dirData.children.map((obj, i) => {
-          return this.renderDirData(obj, '/')
-        })}
-      </Menu>
+      <div>
+        <WrappedFileCtlBtn/>
+        <Menu
+          mode="inline"
+          onClick={this.loadEditorContent}
+        >
+          {dirData.children.map((obj, i) => {
+            return this.renderDirData(obj, '/')
+          })}
+        </Menu>
+      </div>
     )
   }
 
