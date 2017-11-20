@@ -21,7 +21,7 @@ class FileCtlBtnContainer extends Component {
     openDeleteFolder: PropTypes.func,
     cancelDeleteFolder: PropTypes.func,
     deleteFolder: PropTypes.func,
-    deleteFileVisible: PropTypes.func,
+    deleteFileVisible: PropTypes.bool,
     openDeleteFile: PropTypes.func,
     cancelDeleteFile: PropTypes.func,
     deleteFile: PropTypes.func,
