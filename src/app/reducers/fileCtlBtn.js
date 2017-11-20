@@ -1,5 +1,5 @@
 import fetch from 'isomorphic-fetch'
-import { createFolderURL, createFileURL } from '../utils/routing'
+import { createFolderURL, createFileURL, deleteFolderURL, deleteFileURL } from '../utils/routing'
 
 //Action types
 const OPEN_NEW_FOLDER = "OPEN_NEW_FOLDER"
@@ -114,5 +114,29 @@ export const createNewFile = (values, appName, currentFilePath) => {
   return dispatch => {
     dispatch(cancelNewFile())
     return fetch(createFileURL(appName, currentFilePath), { method: 'post', body: JSON.stringify(data) })
+  }
+}
+
+export const deleteFolder = (appName, currentFilePath) => {
+  const data = {
+    appName: appName,
+    currentFilePath: currentFilePath,
+    isFolder: true,
+  }
+  return dispatch => {
+    dispatch(cancelDeleteFolder())
+    return fetch(deleteFolderURL(appName, currentFilePath), { method: 'post', body: JSON.stringify(data)})
+  }
+}
+
+export const deleteFile = (appName, currentFilePath) => {
+  const data = {
+    appName: appName,
+    currentFilePath: currentFilePath,
+    isFolder: false,
+  }
+  return dispatch => {
+    dispatch(cancelDeleteFile())
+    return fetch(deleteFileURL(appName, currentFilePath), { method: 'post', body: JSON.stringify(data)})
   }
 }

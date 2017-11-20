@@ -50,3 +50,10 @@ export const createFileURL = (appName, currPath) => {
   return buildURL('/explorer/createFile', {appName: appName, currPath: currPath})
 }
 
+export const deleteFolderURL = (appName, currPath) => {
+  return buildURL('/explorer/deleteFolder', {appName: appName, currPath: currPath})
+}
+
+export const deleteFileURL = (appName, currPath) => {
+  return buildURL('/explorer/deleteFile', {appName: appName, currPath: currPath})
+}

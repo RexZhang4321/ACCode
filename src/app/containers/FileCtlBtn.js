@@ -3,14 +3,36 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import FileCtlBtn from '../components/FileCtlBtn'
 import { DEFAULT_PROJECT_NAME, DEFAULT_CURRENT_FILE_PATH } from '../reducers/projectConfig'
-import { openNewFolder, openNewFile, cancelNewFolder, cancelNewFile, openDeleteFolder, cancelDeleteFolder, openDeleteFile, cancelDeleteFile, createNewFolder, createNewFile } from '../reducers/fileCtlBtn'
+import { openNewFolder, openNewFile, cancelNewFolder, cancelNewFile, openDeleteFolder, cancelDeleteFolder, openDeleteFile, cancelDeleteFile, createNewFolder, createNewFile, deleteFolder, deleteFile } from '../reducers/fileCtlBtn'
 
 class FileCtlBtnContainer extends Component {
+
+  static propTypes = {
+    form: PropTypes.object,
+    newFolderVisible: PropTypes.bool,
+    newFileVisible: PropTypes.bool,
+    cancelNewFolder: PropTypes.func,
+    cancelNewFile: PropTypes.func,
+    createNewFolder: PropTypes.func,
+    createNewFile: PropTypes.func,
+    openNewFolder: PropTypes.func,
+    openNewFile: PropTypes.func,
+    deleteFolderVisible: PropTypes.bool,
+    openDeleteFolder: PropTypes.func,
+    cancelDeleteFolder: PropTypes.func,
+    deleteFolder: PropTypes.func,
+    deleteFileVisible: PropTypes.func,
+    openDeleteFile: PropTypes.func,
+    cancelDeleteFile: PropTypes.func,
+    deleteFile: PropTypes.func,
+  }
 
   constructor(props) {
     super(props)
     this.createNewFolder = this.createNewFolder.bind(this)
     this.createNewFile = this.createNewFile.bind(this)
+    this.deleteFile = this.deleteFile.bind(this)
+    this.deleteFolder = this.deleteFolder.bind(this)
   }
 
   createNewFolder = () => {
@@ -20,6 +42,15 @@ class FileCtlBtnContainer extends Component {
   createNewFile = () => {
     this.props.createNewFile(this.props.form, this.props.appName, this.props.currentFilePath)
   }
+
+  deleteFolder = () => {
+    this.props.deleteFolder(this.props.appName, this.props.currentFilePath)
+  }
+
+  deleteFile = () => {
+    this.props.deleteFile(this.props.appName, this.props.currentFilePath)
+  }
+
   render() {
     return (
       <FileCtlBtn 
@@ -35,11 +66,11 @@ class FileCtlBtnContainer extends Component {
         deleteFolderVisible={this.props.deleteFolderVisible}
         onOpenDeleteFolder={this.props.openDeleteFolder}
         onCancelDeleteFolder={this.props.cancelDeleteFolder}
-        onDeleteFolder={this.props.deleteFolder}
+        onDeleteFolder={this.deleteFolder}
         deleteFileVisible={this.props.deleteFileVisible}
         onOpenDeleteFile={this.props.openDeleteFile}
         onCancelDeleteFile={this.props.cancelDeleteFile}
-        onDeleteFile={this.props.deleteFile}
+        onDeleteFile={this.deleteFile}
       />
     )
   }
@@ -89,7 +120,6 @@ const mapDispatchToProps = (dispatch) => {
     createNewFolder: (form, appName, currentFilePath) => {
       form.validateFields((err, values) => {
         if (!err) {
-          console.log(currentFilePath)
           dispatch(createNewFolder(values, appName, currentFilePath))
         }
       });
@@ -100,7 +130,13 @@ const mapDispatchToProps = (dispatch) => {
           dispatch(createNewFile(values, appName, currentFilePath))
         }
       });
-    }
+    },
+    deleteFolder: (appName, currentFilePath) => {
+      dispatch(deleteFolder(appName, currentFilePath))
+    },
+    deleteFile: (appName, currentFilePath) => {
+      dispatch(deleteFile(appName, currentFilePath))
+    },
   }
 }
 
