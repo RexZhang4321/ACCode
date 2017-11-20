@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import Explorer from '../components/Explorer'
 import { fetchProject } from '../reducers/explorer'
 import { fetchFileContent } from '../reducers/editor'
-import { DEFAULT_PROJECT_NAME } from '../reducers/projectConfig'
+import { DEFAULT_PROJECT_NAME, setCurrentFolder } from '../reducers/projectConfig'
 
 class ExplorerContainer extends Component {
   static propTypes = {
@@ -42,6 +42,7 @@ class ExplorerContainer extends Component {
         projectDir={this.props.projectDir}
         isFetching={this.props.isFetching}
         onLoadEditorContent={this.props.fetchFileContent}
+        setCurrFolder={this.props.setCurrFolder}
       />
     )
   }
@@ -72,6 +73,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     fetchFileContent: (appName, path) => {
       dispatch(fetchFileContent(appName, path))
+    },
+    setCurrFolder: (values) => {
+      dispatch(setCurrentFolder(values['key']))
     }
   }
 }
