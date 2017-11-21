@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import FileCtlBtn from '../components/FileCtlBtn'
-import { DEFAULT_PROJECT_NAME, DEFAULT_CURRENT_FILE_PATH } from '../reducers/projectConfig'
+import { DEFAULT_PROJECT_NAME, DEFAULT_CURRENT_FILE_PATH, DEFAULT_CURRENT_FOLDER } from '../reducers/projectConfig'
 import { openNewFolder, openNewFile, cancelNewFolder, cancelNewFile, openDeleteFolder, cancelDeleteFolder, openDeleteFile, cancelDeleteFile, createNewFolder, createNewFile, deleteFolder, deleteFile } from '../reducers/fileCtlBtn'
 
 class FileCtlBtnContainer extends Component {
@@ -36,15 +36,15 @@ class FileCtlBtnContainer extends Component {
   }
 
   createNewFolder = () => {
-    this.props.createNewFolder(this.props.form, this.props.appName, this.props.currentFilePath)
+    this.props.createNewFolder(this.props.form, this.props.appName, this.props.currentFolder)
   }
 
   createNewFile = () => {
-    this.props.createNewFile(this.props.form, this.props.appName, this.props.currentFilePath)
+    this.props.createNewFile(this.props.form, this.props.appName, this.props.currentFolder)
   }
 
   deleteFolder = () => {
-    this.props.deleteFolder(this.props.appName, this.props.currentFilePath)
+    this.props.deleteFolder(this.props.appName, this.props.currentFolder)
   }
 
   deleteFile = () => {
@@ -84,11 +84,12 @@ const mapStateToProps = (state) => {
     deleteFolderVisible: false,
     deleteFileVisible: false,
   }
-  const { appName, currentFilePath } = projectConfigReducer || {
+  const { appName, currentFilePath, currentFolder } = projectConfigReducer || {
     appName: DEFAULT_PROJECT_NAME,
-    currentFilePath: DEFAULT_CURRENT_FILE_PATH
+    currentFilePath: DEFAULT_CURRENT_FILE_PATH,
+    currentFolder: DEFAULT_CURRENT_FOLDER,
   }
-  return { newFolderVisible, newFileVisible, deleteFolderVisible, deleteFileVisible, appName, currentFilePath }
+  return { newFolderVisible, newFileVisible, deleteFolderVisible, deleteFileVisible, appName, currentFilePath, currentFolder }
 }
   
 const mapDispatchToProps = (dispatch) => {
@@ -117,22 +118,22 @@ const mapDispatchToProps = (dispatch) => {
     cancelDeleteFile: () => {
       dispatch(cancelDeleteFile())
     },
-    createNewFolder: (form, appName, currentFilePath) => {
+    createNewFolder: (form, appName, currentFolder) => {
       form.validateFields((err, values) => {
         if (!err) {
-          dispatch(createNewFolder(values, appName, currentFilePath))
+          dispatch(createNewFolder(values, appName, currentFolder))
         }
       });
     },
-    createNewFile: (form, appName, currentFilePath) => {
+    createNewFile: (form, appName, currentFolder) => {
       form.validateFields((err, values) => {
         if (!err) {
-          dispatch(createNewFile(values, appName, currentFilePath))
+          dispatch(createNewFile(values, appName, currentFolder))
         }
       });
     },
-    deleteFolder: (appName, currentFilePath) => {
-      dispatch(deleteFolder(appName, currentFilePath))
+    deleteFolder: (appName, currentFolder) => {
+      dispatch(deleteFolder(appName, currentFolder))
     },
     deleteFile: (appName, currentFilePath) => {
       dispatch(deleteFile(appName, currentFilePath))

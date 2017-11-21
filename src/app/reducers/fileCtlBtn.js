@@ -91,41 +91,41 @@ export const cancelDeleteFile = () => {
   return { type: CANCEL_DELETE_FILE }
 }
 
-export const createNewFolder = (values, appName, currentFilePath) => {
+export const createNewFolder = (values, appName, currentFolder) => {
   const data = {
     appName: appName,
-    currentFilePath: currentFilePath,
+    currentFolder: currentFolder,
     isFolder: true,
     name: values['Folder Name']
   }
   return dispatch => {
     dispatch(cancelNewFolder())
-    return fetch(createFolderURL(appName, currentFilePath), { method: 'post', body: JSON.stringify(data) })
+    return fetch(createFolderURL(appName, currentFolder), { method: 'post', body: JSON.stringify(data) })
   }
 }
 
-export const createNewFile = (values, appName, currentFilePath) => {
+export const createNewFile = (values, appName, currentFolder) => {
   const data = {
     appName: appName,
-    currentFilePath: currentFilePath,
+    currentFolder: currentFolder,
     isFolder: false,
     name: values['File Name']
   }
   return dispatch => {
     dispatch(cancelNewFile())
-    return fetch(createFileURL(appName, currentFilePath), { method: 'post', body: JSON.stringify(data) })
+    return fetch(createFileURL(appName, currentFolder), { method: 'post', body: JSON.stringify(data) })
   }
 }
 
-export const deleteFolder = (appName, currentFilePath) => {
+export const deleteFolder = (appName, currentFolder) => {
   const data = {
     appName: appName,
-    currentFilePath: currentFilePath,
+    currentFolder: currentFolder,
     isFolder: true,
   }
   return dispatch => {
     dispatch(cancelDeleteFolder())
-    return fetch(deleteFolderURL(appName, currentFilePath), { method: 'post', body: JSON.stringify(data)})
+    return fetch(deleteFolderURL(appName, currentFolder), { method: 'post', body: JSON.stringify(data)})
   }
 }
 

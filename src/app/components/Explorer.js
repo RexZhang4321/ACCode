@@ -28,7 +28,7 @@ export default class Explorer extends Component {
   renderDirData(data, curDir) {
     if (data.type === defs.FOLDER_T) {
       return (
-        <SubMenu key={data.name} title={<span><Icon type={defs.FOLDER_T} /><span>{data.name}</span></span>} onTitleClick={this.props.setCurrFolder}>
+        <SubMenu key={curDir + data.name} title={<span><Icon type={defs.FOLDER_T} /><span>{data.name}</span></span>} onTitleClick={this.props.setCurrFolder}>
           {data.children.map((obj, i) => {
             return this.renderDirData(obj, curDir + data.name + '/')
           })}
