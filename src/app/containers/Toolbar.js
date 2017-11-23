@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Toolbar from '../components/Toolbar'
 import { fireBuildProject, finishBuildProject, fireSaveProject } from '../reducers/toolbar'
-import { fetchBuildLog } from '../reducers/outputWindow'
+import { fetchBuildLog, fetchAppLog } from '../reducers/outputWindow'
 import { DEFAULT_PROJECT_NAME, DEFAULT_BUILD_ID, DEFAULT_CURRENT_FILE_PATH } from '../reducers/projectConfig'
 import { DEFAULT_CONTENT } from '../reducers/editor'
 import { subscribeServerURL } from '../utils/routing'
@@ -13,12 +13,14 @@ class ToolbarContainer extends Component {
     buildProject: PropTypes.func,
     finishBuildProject: PropTypes.func,
     fetchBuildLog: PropTypes.func,
+    fetchAppLog: PropTypes.func,
     isBuilding: PropTypes.bool,
     isSaving: PropTypes.bool,
     saveProject: PropTypes.func,
   }
 
   fetchBuildLogTimer = null
+  fetchAppLogTimer = null
   eventSource = null
 
   constructor(props) {
@@ -26,6 +28,8 @@ class ToolbarContainer extends Component {
     this.buildProject = this.buildProject.bind(this)
     this._initServerSideEvent = this._initServerSideEvent.bind(this)
     this.saveProject = this.saveProject.bind(this)
+    this._fetchBuildLog = this._fetchBuildLog.bind(this)
+    this._fetchAppLog = this._fetchAppLog.bind(this)
   }
 
   componentWillMount() {
@@ -38,12 +42,7 @@ class ToolbarContainer extends Component {
       // read the log
       clearTimeout(this.fetchBuildLogTimer)
       const buildId = nextProps.buildId
-      this.fetchBuildLogTimer = setTimeout(() => {
-        this.props.fetchBuildLog(buildId, this.props.lastBuildLogTimestamp + 1)
-        setTimeout(() => {
-          this.props.fetchBuildLog(buildId, this.props.lastBuildLogTimestamp + 1)
-        }, 5000);
-      }, 5000)
+      this._fetchBuildLog(buildId)
     }
 
     // appName has been updated
@@ -63,10 +62,22 @@ class ToolbarContainer extends Component {
         case 'build-finished':
           this.props.finishBuildProject()
           clearTimeout(this.fetchBuildLogTimer)
+          clearTimeout(this.fetchAppLogTimer)
+          this._fetchAppLog()
         default:
           console.log('no matching event!')
       }
     }
+  }
+
+  _fetchBuildLog(buildId) {
+    this.props.fetchBuildLog(buildId, this.props.lastBuildLogTimestamp + 1)
+    this.fetchBuildLogTimer = setTimeout(this._fetchBuildLog, 5000, buildId)
+  }
+
+  _fetchAppLog() {
+    this.props.fetchAppLog(this.props.appName, this.props.lastAppLogTimestamp)
+    this.fetchAppLogTimer = setTimeout(this._fetchAppLog, 5000)
   }
 
   openEmulator() {
@@ -102,14 +113,14 @@ const mapStateToProps = (state) => {
   const { toolbarReducer, outputWindowReducer, projectConfigReducer, editorReducer } = state
   const { isBuilding } = toolbarReducer || { isBuilding: false }
   const { isSaving } = toolbarReducer || { isSaving: false }
-  const { lastBuildLogTimestamp } = outputWindowReducer || { lastBuildLogTimestamp: 0 }
+  const { lastBuildLogTimestamp, lastAppLogTimestamp } = outputWindowReducer || { lastBuildLogTimestamp: 0, lastAppLogTimestamp: Date.now() }
   const { appName, buildId, currentFilePath } = projectConfigReducer || {
     appName: DEFAULT_PROJECT_NAME,
     buildId: DEFAULT_BUILD_ID,
     currentFilePath: DEFAULT_CURRENT_FILE_PATH
   }
   const { content } = editorReducer || { content: DEFAULT_CONTENT }
-  return { isBuilding, lastBuildLogTimestamp, appName, buildId, isSaving, content, currentFilePath }
+  return { isBuilding, lastBuildLogTimestamp, lastAppLogTimestamp, appName, buildId, isSaving, content, currentFilePath }
 }
 
 const mapDispatchToProps = (dispatch) => {
@@ -128,6 +139,10 @@ const mapDispatchToProps = (dispatch) => {
     },
     fetchBuildLog: (buildId, startTime) => {
       dispatch(fetchBuildLog(buildId, startTime))
+    },
+    fetchAppLog: (appName, startTime) => {
+      console.log(appName, startTime)
+      dispatch(fetchAppLog(appName, startTime))
     }
   }
 }

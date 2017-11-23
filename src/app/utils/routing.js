@@ -38,6 +38,10 @@ export const getBuildLogURL = (buildId, startTime) => {
   return buildURL('/tools/buildlog', {buildId: buildId, startTime: startTime})
 }
 
+export const getAppLogURL = (appName, ts) => {
+  return buildURL('/tools/applog', {appName: appName, startTime: ts})
+}
+
 export const createProjectURL = (projectName, packageName, description='') => {
   return buildURL('/tools/createProject', {name: projectName, package: packageName, description: description})
 }

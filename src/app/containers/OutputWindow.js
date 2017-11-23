@@ -7,7 +7,9 @@ import { fetchBuildLog } from '../reducers/outputWindow'
 class OutputWindowContainer extends Component {
   static propTypes = {
     buildLog: PropTypes.array,
-    lastBuildLogTimestamp: PropTypes.number
+    lastBuildLogTimestamp: PropTypes.number,
+    appLog: PropTypes.string,
+    lastAppLogTimestamp: PropTypes.number
   }
 
   render() {
@@ -15,6 +17,8 @@ class OutputWindowContainer extends Component {
       <OutputWindow
         buildLog={this.props.buildLog}
         lastBuildLogTimestamp={this.props.lastBuildLogTimestamp}
+        appLog={this.props.appLog}
+        lastAppLogTimestamp={this.props.lastAppLogTimestamp}
       />
     )
   }
@@ -22,11 +26,23 @@ class OutputWindowContainer extends Component {
 
 const mapStateToProps = (state) => {
   const { outputWindowReducer } = state
-  const { buildLog, lastBuildLogTimestamp } = outputWindowReducer || { buildLog: [], lastBuildLogTimestamp: 0 }
+  const {
+    buildLog,
+    lastBuildLogTimestamp,
+    appLog,
+    lastAppLogTimestamp
+  } = outputWindowReducer || {
+    buildLog: [],
+    lastBuildLogTimestamp: 0,
+    appLog: '',
+    lastAppLogTimestamp: Date.now()
+  }
 
   return {
     buildLog,
-    lastBuildLogTimestamp
+    lastBuildLogTimestamp,
+    appLog,
+    lastAppLogTimestamp
   }
 }
 
