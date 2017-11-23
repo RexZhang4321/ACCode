@@ -7,7 +7,7 @@ const SET_CURRENT_FOLDER = 'SET_CURRENT_FOLDER'
 export const DEFAULT_PROJECT_NAME = 'test-android-hello'
 export const DEFAULT_BUILD_ID = 'android-build-sdk-base:22f82d4c-82e8-4dee-a975-717661a323c4'
 export const DEFAULT_CURRENT_FILE_PATH = 'null'
-export const DEFAULT_CURRENT_FOLDER = 'null'
+export const DEFAULT_CURRENT_FOLDER = '/'
 
 // Reducer
 export default function(state, action) {

@@ -1,5 +1,6 @@
 import fetch from 'isomorphic-fetch'
 import { createFolderURL, createFileURL, deleteFolderURL, deleteFileURL } from '../utils/routing'
+import { fetchProject } from './explorer'
 
 //Action types
 const OPEN_NEW_FOLDER = "OPEN_NEW_FOLDER"
@@ -101,6 +102,7 @@ export const createNewFolder = (values, appName, currentFolder) => {
   return dispatch => {
     dispatch(cancelNewFolder())
     return fetch(createFolderURL(appName, currentFolder), { method: 'post', body: JSON.stringify(data) })
+      .then((response) => dispatch(fetchProject(appName)))
   }
 }
 
@@ -114,6 +116,7 @@ export const createNewFile = (values, appName, currentFolder) => {
   return dispatch => {
     dispatch(cancelNewFile())
     return fetch(createFileURL(appName, currentFolder), { method: 'post', body: JSON.stringify(data) })
+      .then((response) => dispatch(fetchProject(appName)))
   }
 }
 
@@ -126,6 +129,7 @@ export const deleteFolder = (appName, currentFolder) => {
   return dispatch => {
     dispatch(cancelDeleteFolder())
     return fetch(deleteFolderURL(appName, currentFolder), { method: 'post', body: JSON.stringify(data)})
+      .then((response) => dispatch(fetchProject(appName)))
   }
 }
 
@@ -138,5 +142,6 @@ export const deleteFile = (appName, currentFilePath) => {
   return dispatch => {
     dispatch(cancelDeleteFile())
     return fetch(deleteFileURL(appName, currentFilePath), { method: 'post', body: JSON.stringify(data)})
+      .then((response) => dispatch(fetchProject(appName)))
   }
 }
