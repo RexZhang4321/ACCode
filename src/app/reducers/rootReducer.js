@@ -6,6 +6,7 @@ import createProjectBtnReducer from './createProjectBtn'
 import outputWindowReducer from './outputWindow'
 import projectConfigReducer from './projectConfig'
 import fileCtlBtnReducer from './fileCtlBtn'
+import openProjectBtnReducer from './openProjectBtn'
 
 // register all the reducers here
 const rootReducer = combineReducers({
@@ -16,6 +17,7 @@ const rootReducer = combineReducers({
   outputWindowReducer,
   projectConfigReducer,
   fileCtlBtnReducer,
+  openProjectBtnReducer
 })
 
 export default rootReducer
