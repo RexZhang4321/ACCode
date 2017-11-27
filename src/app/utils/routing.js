@@ -3,7 +3,7 @@ import URI from 'urijs'
 const base = () => {
   return new URI({
     protocol: 'http',
-    hostname: 'localhost',
+    hostname: 'ec2-54-157-243-34.compute-1.amazonaws.com',
     port: 5000
   })
 }
