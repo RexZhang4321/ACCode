@@ -81,7 +81,7 @@ class ToolbarContainer extends Component {
   }
 
   openEmulator() {
-    emulatorWindow = window.open('about:blank', 'android 6.0 emulator')
+    emulatorWindow = window.open('https://ec2-34-227-4-36.compute-1.amazonaws.com/', 'android 6.0 emulator')
     if (window.focus) {
       emulatorWindow.focus()
     }
